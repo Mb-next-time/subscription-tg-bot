@@ -7,4 +7,5 @@ class ButtonText(Enum):
 
 class CallbackFunction(Enum):
     SHOW_TARIFFS = "show_tariffs"
-    SHOW_MEMES = "show_memes"
+    SHOW_MEMES_NEXT = "show_memes_next"
+    SHOW_MEMES_BACK = "show_memes_back"
