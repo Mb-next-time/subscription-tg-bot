@@ -10,7 +10,6 @@ def main_menu():
 
     return builder.as_markup(
         resize_keyboard=True,
-        one_time_keyboard=True,
     )
 
 def show_surprise_menu():
