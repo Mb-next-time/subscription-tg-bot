@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import DateTime
 from sqlalchemy.orm import Mapped, mapped_column
@@ -12,4 +12,4 @@ class User(Base):
     telegram_id: Mapped[int] = mapped_column(unique=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
     daily_count: Mapped[int] = mapped_column(default=0)
-    timestamp_first_count: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    timestamp_first_count: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc) - timedelta(days=1))
