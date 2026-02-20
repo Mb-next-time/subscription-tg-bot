@@ -7,6 +7,11 @@ def main_menu():
 
     builder.button(text=ButtonText.GIVE_MEME.value)
     builder.button(text=ButtonText.TARIFFS.value)
+    builder.button(text=ButtonText.ANONIM_SURVEY.value)
+
+    # Forming buttons in rows
+    # first line is 2 buttons, seconds line is one button
+    builder.adjust(2, 1)
 
     return builder.as_markup(
         resize_keyboard=True,
