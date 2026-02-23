@@ -41,7 +41,7 @@ class ShareMemes(StatesGroup):
 async def do_you_want_share_meme(message: Message, state: FSMContext) -> None:
     await state.set_state(ShareMemes.do_you_want_share_meme)
     await message.answer(
-        "Ты хочешь поделиться своими мемами мо мной ?",
+        "Ты хочешь поделиться своими мемами со мной ?",
         reply_markup=reply_keyboard_markup_share_meme,
     )
 
