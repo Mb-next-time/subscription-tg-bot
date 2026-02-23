@@ -7,7 +7,7 @@ def main_menu():
 
     builder.button(text=ButtonText.GIVE_MEME.value)
     builder.button(text=ButtonText.TARIFFS.value)
-    builder.button(text=ButtonText.ANONIM_SURVEY.value)
+    builder.button(text=ButtonText.SHARE_MEMES.value)
 
     # Forming buttons in rows
     # first line is 2 buttons, seconds line is one button
