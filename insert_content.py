@@ -12,10 +12,15 @@ async def main():
     path_memes: Path = Path(MEMES_DIR)
     async with config.get_database_session() as session:
         for entry in path_memes.iterdir():
+            _, ext = entry.name.split('.')
             try:
-                await session.execute(insert(models.Content).values(path=f"{path_memes}/{entry.name}"))
+                if ext == 'jpg':
+                    content_type = 'image'
+                else:
+                    content_type = 'video'
+                await session.execute(insert(models.Content).values(path=f"{path_memes}/{entry.name}", type=content_type))
                 await session.commit()
             except IntegrityError:
-                pass
+                await session.rollback()
 
 asyncio.run(main())
