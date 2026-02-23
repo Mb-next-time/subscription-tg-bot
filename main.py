@@ -5,7 +5,7 @@ import sys
 from aiogram import Bot, Dispatcher
 
 from bot.config import BotSettings
-from bot.handlers import start, tariffs, meme, share_memes
+from bot.handlers import start, subscriptions, meme, share_memes
 
 
 async def main():
@@ -15,7 +15,7 @@ async def main():
 
     dp.include_router(start.router)
     dp.include_router(meme.router)
-    dp.include_router(tariffs.router)
+    dp.include_router(subscriptions.router)
     dp.include_router(share_memes.router)
 
     await dp.start_polling(bot)

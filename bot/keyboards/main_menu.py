@@ -1,12 +1,12 @@
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
-from bot.keyboards.constants import ButtonText, CallbackFunction
+from bot.keyboards.constants import ButtonText
 
 def main_menu():
     builder = ReplyKeyboardBuilder()
 
     builder.button(text=ButtonText.GIVE_MEME.value)
-    builder.button(text=ButtonText.TARIFFS.value)
+    builder.button(text=ButtonText.SUBSCRIPTIONS.value)
     builder.button(text=ButtonText.SHARE_MEMES.value)
 
     # Forming buttons in rows
@@ -16,10 +16,3 @@ def main_menu():
     return builder.as_markup(
         resize_keyboard=True,
     )
-
-def show_surprise_menu():
-    builder = InlineKeyboardBuilder()
-
-    builder.button(text="\U0001F9D0 А нет Сюрпрайза", callback_data=CallbackFunction.SHOW_TARIFFS.value)
-
-    return builder.as_markup()
