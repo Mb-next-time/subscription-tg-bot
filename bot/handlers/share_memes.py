@@ -11,7 +11,6 @@ from bot.keyboards.constants import ButtonText
 from bot.keyboards.main_menu import main_menu
 
 max_uploading_media_files_in_one_time = 5
-lock = asyncio.Lock()
 
 reply_keyboard_markup_share_meme = ReplyKeyboardMarkup(
     keyboard=[
@@ -77,7 +76,7 @@ async def good_bye(message: Message, state: FSMContext) -> None:
     )
 
 @router.message(ShareMemes.uploading_file, F.text.casefold() == uploading_file_ready.lower())
-async def uploading_file_yes(message: Message, state: FSMContext) -> None:
+async def uploading_file_ready(message: Message, state: FSMContext) -> None:
     await good_bye(message, state)
 
 
@@ -123,19 +122,12 @@ async def uploading_file_too_big(message: Message):
 
 @router.message(ShareMemes.uploading_file, F.photo | F.document | F.video)
 async def uploading_file(message: Message, state: FSMContext) -> None:
-    async with lock:
-        data = await state.get_data()
-        count_media_files: int = data.get("count_media_files", 0)
+    data = await state.get_data()
+    count_media_files: int = data.get("count_media_files", 0)
 
-        if count_media_files >= max_uploading_media_files_in_one_time:
-            await message.answer(
-                text="🙄Больше нельзя прикрепить медиа файлы",
-                reply_markup=uploading_file_finish_keyboard,
-            )
-            return
+    if count_media_files < max_uploading_media_files_in_one_time:
         user_dir: Path = Path(UPLOAD_DIR + f"/{message.from_user.id}")
         user_dir.mkdir(parents=True, exist_ok=True)
-
         if message.photo:
             file_id, file_path = download_attributes_for_photo(user_dir, message)
         elif message.document:
@@ -143,11 +135,13 @@ async def uploading_file(message: Message, state: FSMContext) -> None:
         elif message.video:
             file_id, file_path = download_attributes_for_video(user_dir, message)
 
+        text = f"🧐Медиа файлов прикреплено: {count_media_files + 1} из {max_uploading_media_files_in_one_time}"
+        await state.update_data({"count_media_files": count_media_files+1})
         await message.bot.download(file_id, destination=file_path)
+    else:
+        text = "🙄Больше нельзя прикрепить медиа файлы"
 
-        count_media_files += 1
-        await state.update_data(count_media_files=count_media_files)
     await message.answer(
-        text=f"🧐Медиа файлов прикреплено: {count_media_files}",
+        text=text,
         reply_markup=uploading_file_finish_keyboard,
     )
