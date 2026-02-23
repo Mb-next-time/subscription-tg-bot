@@ -1,2 +1,3 @@
 DAILY_MAX_WITHOUT_SUB = 5
 TIME_FOR_DAILY_RESET = 60 * 60 * 24 # 1 day
+MEMES_DIR = "media/memes"

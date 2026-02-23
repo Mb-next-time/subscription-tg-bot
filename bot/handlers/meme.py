@@ -7,11 +7,11 @@ from aiogram.types import FSInputFile, Message
 from sqlalchemy import select, update
 
 from bot.keyboards.constants import ButtonText
-from bot.handlers.constants import DAILY_MAX_WITHOUT_SUB, TIME_FOR_DAILY_RESET
+from bot.handlers.constants import DAILY_MAX_WITHOUT_SUB, TIME_FOR_DAILY_RESET, MEMES_DIR
 from database.config import get_database_session
 from database.models import User
 
-MEMES_DIR = "media/memes"
+
 memes = os.listdir(MEMES_DIR)
 
 router = Router()
