@@ -1,15 +1,14 @@
 from datetime import datetime, timezone
 import os
-import random
 
 from aiogram import Router
 from aiogram.types import FSInputFile, Message
-from sqlalchemy import select, update
+from sqlalchemy import select, update, insert, or_, func
 
 from bot.keyboards.constants import ButtonText
 from bot.handlers.constants import DAILY_MAX_WITHOUT_SUB, TIME_FOR_DAILY_RESET, MEMES_DIR
 from database.config import get_database_session
-from database.models import User
+from database.models import User, ViewContent, Content
 
 
 memes = os.listdir(MEMES_DIR)
@@ -20,7 +19,6 @@ router = Router()
 @router.message(lambda message: message.text == ButtonText.GIVE_MEME.value)
 async def show_meme(message: Message) -> None:
     async with get_database_session() as database_session:
-        meme_file = random.choice(memes)
         telegram_id = message.from_user.id
         user: User = (await database_session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
         time_is_passed = (datetime.now(timezone.utc) - user.timestamp_first_count).total_seconds()
@@ -32,10 +30,27 @@ async def show_meme(message: Message) -> None:
             )
             return
 
-        await message.answer_photo(
-            photo=FSInputFile(f"{MEMES_DIR}/{meme_file}"),
-            caption=f"Вот ваш мем 😂 (Осталось {DAILY_MAX_WITHOUT_SUB - user.daily_count - 1})",
-        )
+        content = (await database_session.execute(select(Content).outerjoin(
+            ViewContent, ViewContent.content_id == Content.id
+        ).where(
+            or_(ViewContent.user_id != user.id, ViewContent.user_id == None),
+            ViewContent.id == None).order_by(func.random()).limit(1))).scalar_one_or_none()
+        if content is None:
+            await message.answer(text=f"@{message.from_user.username} контент закончился 👀\nПополним в скором времени 🚀")
+            return
+
+        file = FSInputFile(content.path)
+        caption = f"Вот ваш мем 😂 (Осталось {DAILY_MAX_WITHOUT_SUB - user.daily_count - 1})"
+        if content.type == 'image':
+            await message.answer_photo(
+                photo=file,
+                caption=caption,
+            )
+        elif content.type == 'video':
+            await message.answer_video(
+                video=file,
+                caption=caption
+            )
         update_date: dict[str, datetime | int] = {
             "daily_count": user.daily_count + 1,
         }
@@ -47,3 +62,7 @@ async def show_meme(message: Message) -> None:
             .where(
                 User.telegram_id == telegram_id)
             .values(**update_date))
+        await database_session.execute(insert(ViewContent).values(
+            user_id=user.id,
+            content_id=content.id,
+        ))
