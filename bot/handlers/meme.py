@@ -20,7 +20,7 @@ router = Router()
 async def show_meme(message: Message) -> None:
     async with get_database_session() as database_session:
         telegram_id = message.from_user.id
-        user: User = (await database_session.execute(select(User).where(User.telegram_id == telegram_id))).scalar_one_or_none()
+        user: User = (await database_session.execute(select(User).where(User.telegram_id == telegram_id).with_for_update())).scalar_one_or_none()
         time_is_passed = (datetime.now(timezone.utc) - user.timestamp_first_count).total_seconds()
         if time_is_passed >= TIME_FOR_DAILY_RESET:
             user.daily_count = 0
@@ -41,16 +41,6 @@ async def show_meme(message: Message) -> None:
 
         file = FSInputFile(content.path)
         caption = f"Вот ваш мем 😂 (Осталось {DAILY_MAX_WITHOUT_SUB - user.daily_count - 1})"
-        if content.type == 'image':
-            await message.answer_photo(
-                photo=file,
-                caption=caption,
-            )
-        elif content.type == 'video':
-            await message.answer_video(
-                video=file,
-                caption=caption
-            )
         update_date: dict[str, datetime | int] = {
             "daily_count": user.daily_count + 1,
         }
@@ -66,3 +56,14 @@ async def show_meme(message: Message) -> None:
             user_id=user.id,
             content_id=content.id,
         ))
+
+    if content.type == 'image':
+        await message.answer_photo(
+            photo=file,
+            caption=caption,
+        )
+    elif content.type == 'video':
+        await message.answer_video(
+            video=file,
+            caption=caption
+        )
