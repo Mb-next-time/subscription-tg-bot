@@ -20,7 +20,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-from database.models import User, Content, ViewContent, Subscription
+from database.models import User, Content, ViewContent, Subscription, UserSubscription
 target_metadata = database.config.Base.metadata
 from database.config import database_settings
 database_url = f"{database_settings.SYNC_DRIVER}://{database_settings.USER}:{database_settings.PASSWORD}@{database_settings.HOST}:{database_settings.PORT}/{database_settings.NAME}"
