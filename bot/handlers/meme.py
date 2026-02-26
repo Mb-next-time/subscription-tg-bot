@@ -33,8 +33,8 @@ async def show_meme(message: Message) -> None:
         content = (await database_session.execute(select(Content).outerjoin(
             ViewContent, ViewContent.content_id == Content.id
         ).where(
-            or_(ViewContent.user_id != user.id, ViewContent.user_id == None),
-            ViewContent.id == None).order_by(func.random()).limit(1))).scalar_one_or_none()
+            (ViewContent.id == None) | (ViewContent.user_id != user.id),
+            ).order_by(func.random()).limit(1))).scalar_one_or_none()
         if content is None:
             await message.answer(text=f"@{message.from_user.username} контент закончился 👀\nПополним в скором времени 🚀")
             return
