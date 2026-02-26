@@ -23,7 +23,7 @@ class UserSubscription(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     subscription_id: Mapped[int] = mapped_column(ForeignKey("subscription.id"))
-    expiration_date: Mapped[datetime] = mapped_column(Date())
+    expiration_date: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     status: Mapped[str] = mapped_column(String(16))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=datetime.now(timezone.utc))
 
