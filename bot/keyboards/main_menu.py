@@ -6,7 +6,7 @@ def main_menu():
     builder = ReplyKeyboardBuilder()
 
     builder.button(text=ButtonText.GIVE_MEME.value)
-    builder.button(text=ButtonText.SUBSCRIPTIONS.value)
+    builder.button(text=ButtonText.SUBSCRIPTION.value)
     builder.button(text=ButtonText.SHARE_MEMES.value)
 
     # Forming buttons in rows

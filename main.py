@@ -7,9 +7,10 @@ from aiogram import Bot, Dispatcher
 from bot.config import BotSettings
 from bot.handlers import start, subscriptions, meme, share_memes
 
+bot_settings = BotSettings()
 
 async def main():
-    bot_settings = BotSettings()
+
     bot = Bot(token=bot_settings.TOKEN)
     dp = Dispatcher()
 
