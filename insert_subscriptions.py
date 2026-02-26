@@ -16,7 +16,8 @@ async def main():
                            "<b>Стоимость - 100₽</b>",
             "unit_price": 10000,
             "period": {
-                "monthly": 1,
+                "interval": "monthly",
+                "step": 1,
             },
             "currency_code": "RUB",
         },
@@ -28,7 +29,8 @@ async def main():
                            "<b>Стоимость - 200₽</b>",
             "unit_price": 20000,
             "period": {
-                "monthly": 3,
+                "interval": "monthly",
+                "step": 3,
             },
             "currency_code": "RUB",
         },
